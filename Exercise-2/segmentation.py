@@ -30,7 +30,7 @@ def pcl_callback(pcl_msg):
     filter_axis = 'z'
     passthrough.set_filter_field_name (filter_axis)
     axis_min = 0.6
-    axis_max = 1.1
+    axis_max =  1.1
     passthrough.set_filter_limits (axis_min, axis_max)
 
     # Finally use the filter function to obtain the resultant point cloud. 
@@ -49,26 +49,28 @@ def pcl_callback(pcl_msg):
     inliers, coefficients = seg.segment()
 
     # TODO: Extract inliers and outliers
-    extracted_inliers = cloud_filtered.extract(inliers, negative=False)
-    extracted_outliers = cloud_filtered.extract(inliers, negative=True)
+    extracted_inliers = cloud_filtered.extract(inliers, negative=False) # table
+    extracted_outliers = cloud_filtered.extract(inliers, negative=True) # Objects
 
 
     # TODO: Euclidean Clustering
-    white_cloud = XYZRGB_to_XYZ(cloud) # Apply function to convert XYZRGB to XYZ
+    white_cloud = XYZRGB_to_XYZ(extracted_outliers) # Apply function to convert XYZRGB to XYZ
     tree = white_cloud.make_kdtree()
-
-
 
 
     # TODO: Create Cluster-Mask Point Cloud to visualize each cluster separately
     ec = white_cloud.make_EuclideanClusterExtraction()
+
     # Set tolerances for distance threshold 
     # as well as minimum and maximum cluster size (in points)
     # NOTE: These are poor choices of clustering parameters
     # Your task is to experiment and find values that work for segmenting objects.
+    # ec.set_ClusterTolerance(0.024)
+#    ec.set_ClusterTolerance(0.04)
     ec.set_ClusterTolerance(0.024)
     ec.set_MinClusterSize(20)
     ec.set_MaxClusterSize(2000)
+
     # Search the k-d tree for clusters
     ec.set_SearchMethod(tree)
     # Extract indices for each of the discovered clusters
@@ -90,7 +92,7 @@ def pcl_callback(pcl_msg):
     #Create new cloud containing all clusters, each with unique color
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
-
+    #print('len: ', len(cluster_cloud))
 
 
     # TODO: Convert PCL data to ROS messages
