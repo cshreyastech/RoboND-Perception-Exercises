@@ -56,6 +56,12 @@ After that, you're ready to run the `train_svm.py` model to train an SVM classif
 ```sh
 $ rosrun sensor_stick train_svm.py
 ```
+
+sequence of running the scripts:
+) roslaunch sensor_stick training.launch + capture_features.py
+2) rosrun sensor_stick train_svm.py
+3) roslaunch sensor_stick robot_spawn.launch + object_recognition.py
+
 **Note:  Running this exercise out of the box your classifier will have poor performance because the functions `compute_color_histograms()` and `compute_normal_histograms()` (within `features.py` in /sensor_stick/src/sensor_stick) are generating random junk.  Fix them in order to generate meaningful features and train your classifier!**
 
 ## Classifying Segmented Objects
